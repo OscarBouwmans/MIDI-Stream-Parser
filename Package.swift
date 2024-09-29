@@ -4,21 +4,21 @@
 import PackageDescription
 
 let package = Package(
-    name: "MIDI-Stream-Parser",
+    name: "MIDIStreamParser",
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
-            name: "MIDI-Stream-Parser",
-            targets: ["MIDI-Stream-Parser"]),
+            name: "MIDIStreamParser",
+            targets: ["MIDIStreamParser"]),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "MIDI-Stream-Parser"),
+            name: "MIDIStreamParser"),
         .testTarget(
-            name: "MIDI-Stream-ParserTests",
-            dependencies: ["MIDI-Stream-Parser"]
+            name: "MIDIStreamParserTests",
+            dependencies: ["MIDIStreamParser"]
         ),
     ]
 )
