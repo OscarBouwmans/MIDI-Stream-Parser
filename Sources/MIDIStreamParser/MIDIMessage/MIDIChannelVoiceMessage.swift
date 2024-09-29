@@ -27,7 +27,7 @@ struct MidiNoteOffMessage: MidiNoteMessage {
 }
 
 extension MidiNoteOffMessage {
-    init(channel: UInt8, note: UInt8, velocity: UInt8) throws {
+    public init(channel: UInt8, note: UInt8, velocity: UInt8) throws {
         try validate(channel: channel)
         try validate(valueByte: note)
         try validate(valueByte: velocity)
@@ -41,7 +41,7 @@ struct MidiNoteOnMessage: MidiNoteMessage {
 }
 
 extension MidiNoteOnMessage {
-    init(channel: UInt8, note: UInt8, velocity: UInt8) throws {
+    public init(channel: UInt8, note: UInt8, velocity: UInt8) throws {
         try validate(channel: channel)
         try validate(valueByte: note)
         try validate(valueByte: velocity)
@@ -53,12 +53,12 @@ struct MidiPolyphonicKeyPressureMessage: MidiChannelVoiceMessage {
     var type: MidiMessageType { .polyphonicKeyPressure }
     let bytes: [UInt8]
     
-    var note: UInt8 { bytes[1] }
-    var pressure: UInt8 { bytes[2] }
+    public var note: UInt8 { bytes[1] }
+    public var pressure: UInt8 { bytes[2] }
 }
 
 extension MidiPolyphonicKeyPressureMessage {
-    init(channel: UInt8, note: UInt8, pressure: UInt8) throws {
+    public init(channel: UInt8, note: UInt8, pressure: UInt8) throws {
         try validate(channel: channel)
         try validate(valueByte: note)
         try validate(valueByte: pressure)
@@ -70,12 +70,12 @@ struct MidiControlChangeMessage: MidiChannelVoiceMessage {
     var type: MidiMessageType { .controlChange }
     let bytes: [UInt8]
     
-    var controller: UInt8 { bytes[1] }
-    var value: UInt8 { bytes[2] }
+    public var controller: UInt8 { bytes[1] }
+    public var value: UInt8 { bytes[2] }
 }
 
 extension MidiControlChangeMessage {
-    init(channel: UInt8, controller: UInt8, value: UInt8) throws {
+    public init(channel: UInt8, controller: UInt8, value: UInt8) throws {
         try validate(channel: channel)
         try validate(valueByte: controller)
         try validate(valueByte: value)
@@ -87,11 +87,11 @@ struct MidiProgramChangeMessage: MidiChannelVoiceMessage {
     var type: MidiMessageType { .programChange }
     let bytes: [UInt8]
     
-    var program: UInt8 { bytes[1] }
+    public var program: UInt8 { bytes[1] }
 }
 
 extension MidiProgramChangeMessage {
-    init(channel: UInt8, program: UInt8) throws {
+    public init(channel: UInt8, program: UInt8) throws {
         try validate(channel: channel)
         try validate(valueByte: program)
         self.init(bytes: [192 + channel, program])
@@ -102,11 +102,11 @@ struct MidiChannelPressureMessage: MidiChannelVoiceMessage {
     var type: MidiMessageType { .channelPressure }
     let bytes: [UInt8]
     
-    var pressure: UInt8 { bytes[1] }
+    public var pressure: UInt8 { bytes[1] }
 }
 
 extension MidiChannelPressureMessage {
-    init(channel: UInt8, pressure: UInt8) throws {
+    public init(channel: UInt8, pressure: UInt8) throws {
         try validate(channel: channel)
         try validate(valueByte: pressure)
         self.bytes = [208 + channel, pressure]
@@ -117,13 +117,13 @@ struct MidiPitchBendMessage: MidiChannelVoiceMessage {
     var type: MidiMessageType { .pitchBend }
     let bytes: [UInt8]
     
-    var lsb: UInt8 { bytes[1] }
-    var msb: UInt8 { bytes[2] }
-    var value: UInt16 { UInt16(msb) << 7 + UInt16(lsb) }
+    public var lsb: UInt8 { bytes[1] }
+    public var msb: UInt8 { bytes[2] }
+    public var value: UInt16 { UInt16(msb) << 7 + UInt16(lsb) }
 }
 
 extension MidiPitchBendMessage {
-    init(channel: UInt8, value: UInt16) throws {
+    public init(channel: UInt8, value: UInt16) throws {
         try validate(channel: channel)
         try validate(highResultionValueByte: value)
         let mostSignificant7Bits = UInt8(value >> 7)

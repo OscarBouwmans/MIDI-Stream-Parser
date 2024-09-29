@@ -1,5 +1,5 @@
 
 enum MidiMessageError: Error {
     case invalidChannelNumber
-    case invalidValueByte
+    case invalidValue
 }

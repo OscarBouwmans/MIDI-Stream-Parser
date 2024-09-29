@@ -7,12 +7,12 @@ internal func validate(channel: UInt8) throws {
 
 internal func validate(valueByte: UInt8) throws {
     guard valueByte < 128 else {
-        throw MidiMessageError.invalidValueByte
+        throw MidiMessageError.invalidValue
     }
 }
 
 internal func validate(highResultionValueByte: UInt16) throws {
     guard highResultionValueByte < 8192 else {
-        throw MidiMessageError.invalidValueByte
+        throw MidiMessageError.invalidValue
     }
 }
