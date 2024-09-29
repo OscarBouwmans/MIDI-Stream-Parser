@@ -1,0 +1,2 @@
+
+protocol SystemRealTimeMessage: MidiMessage {}
