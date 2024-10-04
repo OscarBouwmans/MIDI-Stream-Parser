@@ -1,8 +1,8 @@
 
-protocol MidiSystemCommonMessage: MidiMessage {}
+protocol MIDISystemCommonMessage: MIDIMessage {}
 
-struct MidiTimeCodeQuarterFrameMessage: MidiSystemCommonMessage {
-    var type: MidiMessageType { .timeCodeQuarterFrame }
+struct MidiTimeCodeQuarterFrameMessage: MIDISystemCommonMessage {
+    var type: MIDIMessageType { .timeCodeQuarterFrame }
     let bytes: [UInt8]
     
     public var quarterFrameType: QuarterFrameType { .init(rawValue: bytes[1] >> 4)! }
@@ -29,41 +29,41 @@ struct MidiTimeCodeQuarterFrameMessage: MidiSystemCommonMessage {
 
 extension MidiTimeCodeQuarterFrameMessage {
     public init(frameNumberLsb: UInt8) throws {
-        guard frameNumberLsb < 0x80 else { throw MidiMessageError.invalidValue }
+        guard frameNumberLsb < 0x80 else { throw MIDIMessageError.invalidValue }
         self.init(bytes: [0xF1, QuarterFrameType.frameNumberLsb.rawValue + frameNumberLsb])
     }
     public init(frameNumberMsb: UInt8) throws {
-        guard frameNumberMsb < 0x02 else { throw MidiMessageError.invalidValue }
+        guard frameNumberMsb < 0x02 else { throw MIDIMessageError.invalidValue }
         self.init(bytes: [0xF1, QuarterFrameType.frameNumberMsb.rawValue + frameNumberMsb])
     }
     public init(secondLsb: UInt8) throws {
-        guard secondLsb < 0x80 else { throw MidiMessageError.invalidValue }
+        guard secondLsb < 0x80 else { throw MIDIMessageError.invalidValue }
         self.init(bytes: [0xF1, QuarterFrameType.secondLsb.rawValue + secondLsb])
     }
     public init(secondMsb: UInt8) throws {
-        guard secondMsb < 0x04 else { throw MidiMessageError.invalidValue }
+        guard secondMsb < 0x04 else { throw MIDIMessageError.invalidValue }
         self.init(bytes: [0xF1, QuarterFrameType.secondMsb.rawValue + secondMsb])
     }
     public init(minuteLsb: UInt8) throws {
-        guard minuteLsb < 0x80 else { throw MidiMessageError.invalidValue }
+        guard minuteLsb < 0x80 else { throw MIDIMessageError.invalidValue }
         self.init(bytes: [0xF1, QuarterFrameType.minuteLsb.rawValue + minuteLsb])
     }
     public init(minuteMsb: UInt8) throws {
-        guard minuteMsb < 0x04 else { throw MidiMessageError.invalidValue }
+        guard minuteMsb < 0x04 else { throw MIDIMessageError.invalidValue }
         self.init(bytes: [0xF1, QuarterFrameType.minuteMsb.rawValue + minuteMsb])
     }
     public init(hourLsb: UInt8) throws {
-        guard hourLsb < 0x80 else { throw MidiMessageError.invalidValue }
+        guard hourLsb < 0x80 else { throw MIDIMessageError.invalidValue }
         self.init(bytes: [0xF1, QuarterFrameType.hourLsb.rawValue + hourLsb])
     }
     public init(hourMsb: UInt8, rate: FrameRate) throws {
-        guard hourMsb < 0x02 else { throw MidiMessageError.invalidValue }
+        guard hourMsb < 0x02 else { throw MIDIMessageError.invalidValue }
         self.init(bytes: [0xF1, QuarterFrameType.hourMsbAndRate.rawValue + rate.rawValue])
     }
 }
 
-struct MidiSongPositionPointerMessage: MidiSystemCommonMessage {
-    var type: MidiMessageType { .songPositionPointer }
+struct MidiSongPositionPointerMessage: MIDISystemCommonMessage {
+    var type: MIDIMessageType { .songPositionPointer }
     let bytes: [UInt8]
     
     public var lsb: UInt8 { bytes[1] }
@@ -75,14 +75,14 @@ extension MidiSongPositionPointerMessage {
     
 }
 
-struct MidiSongSelect: MidiSystemCommonMessage {
-    var type: MidiMessageType { .songSelect }
+struct MidiSongSelect: MIDISystemCommonMessage {
+    var type: MIDIMessageType { .songSelect }
     let bytes: [UInt8]
     
     public var song: UInt8 { bytes[1] }
 }
 
-struct MidiTuneRequest: MidiSystemCommonMessage {
-    var type: MidiMessageType { .tuneRequest }
+struct MidiTuneRequest: MIDISystemCommonMessage {
+    var type: MIDIMessageType { .tuneRequest }
     let bytes: [UInt8]
 }

@@ -1,2 +1,2 @@
 
-protocol SystemRealTimeMessage: MidiMessage {}
+protocol SystemRealTimeMessage: MIDIMessage {}

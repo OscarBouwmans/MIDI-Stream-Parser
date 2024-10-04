@@ -1,5 +1,5 @@
 
-enum MidiMessageType: UInt8 {
+enum MIDIMessageType: UInt8 {
     case noteOff = 0x80
     case noteOn = 0x90
     case polyphonicKeyPressure = 0xA0
