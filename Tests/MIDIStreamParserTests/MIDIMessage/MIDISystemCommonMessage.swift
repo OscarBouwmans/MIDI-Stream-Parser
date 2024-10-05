@@ -14,16 +14,11 @@ import Testing
     #expect(msgHourMsb?.bytes[1] == 0x75)
     #expect(msgHourMsb?.value == .hourMsb(msb: 1, rate: .r25))
     
-    do {
-        _ = try MIDITimeCodeQuarterFrameMessage(.frameLsb(lsb: 0x80))
-    } catch (let error) {
-        #expect((error as? MIDIMessageError) == .invalidValue)
+    #expect(throws: MIDIMessageError.invalidValue) {
+        try MIDITimeCodeQuarterFrameMessage(.frameLsb(lsb: 0x80))
     }
-    
-    do {
-        _ = try MIDITimeCodeQuarterFrameMessage(.hourMsb(msb: 2, rate: .r24))
-    } catch (let error) {
-        #expect((error as? MIDIMessageError) == .invalidValue)
+    #expect(throws: MIDIMessageError.invalidValue) {
+        try MIDITimeCodeQuarterFrameMessage(.hourMsb(msb: 2, rate: .r24))
     }
 }
 
@@ -41,10 +36,8 @@ import Testing
     #expect(msgMax?.bytes[1] == 0x7F)
     #expect(msgMax?.bytes[2] == 0x7F)
     
-    do {
-        _ = try MIDISongPositionPointerMessage(value: 16384)
-    } catch (let error) {
-        #expect((error as? MIDIMessageError) == .invalidValue)
+    #expect(throws: MIDIMessageError.invalidValue) {
+        try MIDISongPositionPointerMessage(value: 16384)
     }
 }
 
@@ -58,10 +51,8 @@ import Testing
     let msgMax = try? MIDISongSelect(song: 127)
     #expect(msgMax?.bytes[1] == 127)
     
-    do {
-        _ = try MIDISongSelect(song: 128)
-    } catch (let error) {
-        #expect((error as? MIDIMessageError) == .invalidValue)
+    #expect(throws: MIDIMessageError.invalidValue) {
+        try MIDISongSelect(song: 128)
     }
 }
 

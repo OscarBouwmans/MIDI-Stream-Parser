@@ -7,7 +7,10 @@ struct MIDISystemExclusiveMessage: MIDIMessage {
 }
 
 extension MIDISystemExclusiveMessage {
-    init(payload: [UInt8]) {
+    init(payload: [UInt8]) throws {
+        guard !payload.isEmpty else {
+            throw MIDIMessageError.invalidValue
+        }
         self.init(bytes: [0xF0] + payload + [0xF7])
     }
 }

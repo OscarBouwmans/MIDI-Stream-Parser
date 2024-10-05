@@ -12,25 +12,14 @@ import Testing
     #expect(msg?.note == 60)
     #expect(msg?.velocity == 80)
     
-    do {
-        _ = try MIDINoteOffMessage(channel: 16, note: 60, velocity: 80)
+    #expect(throws: MIDIMessageError.invalidChannelNumber) {
+        try MIDINoteOffMessage(channel: 16, note: 60, velocity: 80)
     }
-    catch (let error) {
-        #expect((error as? MIDIMessageError) == .invalidChannelNumber)
+    #expect(throws: MIDIMessageError.invalidValue) {
+        try MIDINoteOffMessage(channel: 7, note: 128, velocity: 80)
     }
-    
-    do {
-        _ = try MIDINoteOffMessage(channel: 7, note: 128, velocity: 80)
-    }
-    catch (let error) {
-        #expect((error as? MIDIMessageError) == .invalidValue)
-    }
-    
-    do {
-        _ = try MIDINoteOffMessage(channel: 7, note: 60, velocity: 128)
-    }
-    catch (let error) {
-        #expect((error as? MIDIMessageError) == .invalidValue)
+    #expect(throws: MIDIMessageError.invalidValue) {
+        try MIDINoteOffMessage(channel: 7, note: 60, velocity: 128)
     }
 }
 
@@ -44,25 +33,14 @@ import Testing
     #expect(msg?.note == 60)
     #expect(msg?.velocity == 80)
     
-    do {
-        _ = try MIDINoteOnMessage(channel: 16, note: 60, velocity: 80)
+    #expect(throws: MIDIMessageError.invalidChannelNumber) {
+        try MIDINoteOnMessage(channel: 16, note: 60, velocity: 80)
     }
-    catch (let error) {
-        #expect((error as? MIDIMessageError) == .invalidChannelNumber)
+    #expect(throws: MIDIMessageError.invalidValue) {
+        try MIDINoteOnMessage(channel: 7, note: 128, velocity: 80)
     }
-    
-    do {
-        _ = try MIDINoteOnMessage(channel: 7, note: 128, velocity: 80)
-    }
-    catch (let error) {
-        #expect((error as? MIDIMessageError) == .invalidValue)
-    }
-    
-    do {
-        _ = try MIDINoteOnMessage(channel: 7, note: 60, velocity: 128)
-    }
-    catch (let error) {
-        #expect((error as? MIDIMessageError) == .invalidValue)
+    #expect(throws: MIDIMessageError.invalidValue) {
+        try MIDINoteOnMessage(channel: 7, note: 60, velocity: 128)
     }
 }
 
@@ -76,25 +54,14 @@ import Testing
     #expect(msg?.note == 60)
     #expect(msg?.pressure == 80)
     
-    do {
-        _ = try MIDIPolyphonicKeyPressureMessage(channel: 16, note: 60, pressure: 80)
+    #expect(throws: MIDIMessageError.invalidChannelNumber) {
+        try MIDIPolyphonicKeyPressureMessage(channel: 16, note: 60, pressure: 80)
     }
-    catch (let error) {
-        #expect((error as? MIDIMessageError) == .invalidChannelNumber)
+    #expect(throws: MIDIMessageError.invalidValue) {
+        try MIDIPolyphonicKeyPressureMessage(channel: 7, note: 128, pressure: 80)
     }
-    
-    do {
-        _ = try MIDIPolyphonicKeyPressureMessage(channel: 7, note: 128, pressure: 80)
-    }
-    catch (let error) {
-        #expect((error as? MIDIMessageError) == .invalidValue)
-    }
-    
-    do {
-        _ = try MIDIPolyphonicKeyPressureMessage(channel: 7, note: 60, pressure: 128)
-    }
-    catch (let error) {
-        #expect((error as? MIDIMessageError) == .invalidValue)
+    #expect(throws: MIDIMessageError.invalidValue) {
+        try MIDIPolyphonicKeyPressureMessage(channel: 7, note: 60, pressure: 128)
     }
 }
 
@@ -108,25 +75,14 @@ import Testing
     #expect(msg?.controller == 64)
     #expect(msg?.value == 127)
     
-    do {
-        _ = try MIDIControlChangeMessage(channel: 16, controller: 64, value: 127)
+    #expect(throws: MIDIMessageError.invalidChannelNumber) {
+        try MIDIControlChangeMessage(channel: 16, controller: 64, value: 127)
     }
-    catch (let error) {
-        #expect((error as? MIDIMessageError) == .invalidChannelNumber)
+    #expect(throws: MIDIMessageError.invalidValue) {
+        try MIDIControlChangeMessage(channel: 7, controller: 128, value: 127)
     }
-    
-    do {
-        _ = try MIDIControlChangeMessage(channel: 7, controller: 128, value: 127)
-    }
-    catch (let error) {
-        #expect((error as? MIDIMessageError) == .invalidValue)
-    }
-    
-    do {
-        _ = try MIDIControlChangeMessage(channel: 7, controller: 64, value: 128)
-    }
-    catch (let error) {
-        #expect((error as? MIDIMessageError) == .invalidValue)
+    #expect(throws: MIDIMessageError.invalidValue) {
+        try MIDIControlChangeMessage(channel: 7, controller: 64, value: 128)
     }
 }
 
@@ -138,18 +94,11 @@ import Testing
     #expect(msg?.channel == 7)
     #expect(msg?.program == 64)
     
-    do {
-        _ = try MIDIProgramChangeMessage(channel: 16, program: 64)
+    #expect(throws: MIDIMessageError.invalidChannelNumber) {
+        try MIDIProgramChangeMessage(channel: 16, program: 64)
     }
-    catch (let error) {
-        #expect((error as? MIDIMessageError) == .invalidChannelNumber)
-    }
-    
-    do {
-        _ = try MIDIProgramChangeMessage(channel: 7, program: 128)
-    }
-    catch (let error) {
-        #expect((error as? MIDIMessageError) == .invalidValue)
+    #expect(throws: MIDIMessageError.invalidValue) {
+        try MIDIProgramChangeMessage(channel: 7, program: 128)
     }
 }
 
@@ -161,18 +110,11 @@ import Testing
     #expect(msg?.channel == 7)
     #expect(msg?.pressure == 100)
     
-    do {
-        _ = try MIDIChannelPressureMessage(channel: 16, pressure: 100)
+    #expect(throws: MIDIMessageError.invalidChannelNumber) {
+        try MIDIChannelPressureMessage(channel: 16, pressure: 100)
     }
-    catch (let error) {
-        #expect((error as? MIDIMessageError) == .invalidChannelNumber)
-    }
-    
-    do {
-        _ = try MIDIChannelPressureMessage(channel: 7, pressure: 128)
-    }
-    catch (let error) {
-        #expect((error as? MIDIMessageError) == .invalidValue)
+    #expect(throws: MIDIMessageError.invalidValue) {
+        try MIDIChannelPressureMessage(channel: 7, pressure: 128)
     }
 }
 
@@ -185,17 +127,10 @@ import Testing
     #expect(msg?.channel == 7)
     #expect(msg?.value == 8192)
     
-    do {
-        _ = try MIDIPitchBendMessage(channel: 16, value: 8192)
+    #expect(throws: MIDIMessageError.invalidChannelNumber) {
+        try MIDIPitchBendMessage(channel: 16, value: 8192)
     }
-    catch (let error) {
-        #expect((error as? MIDIMessageError) == .invalidChannelNumber)
-    }
-    
-    do {
-        _ = try MIDIPitchBendMessage(channel: 7, value: 16384)
-    }
-    catch (let error) {
-        #expect((error as? MIDIMessageError) == .invalidValue)
+    #expect(throws: MIDIMessageError.invalidValue) {
+        try MIDIPitchBendMessage(channel: 7, value: 16384)
     }
 }
