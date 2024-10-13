@@ -14,9 +14,11 @@ enum MIDIMessageType: UInt8 {
     case tuneRequest = 0xF6
     case endOfExclusive = 0xF7
     case timingClock = 0xF8
+    case reserved1 = 0xF9
     case start = 0xFA
     case `continue` = 0xFB
     case stop = 0xFC
+    case reserved2 = 0xFD
     case activeSensing = 0xFE
     case systemReset = 0xFF
 }

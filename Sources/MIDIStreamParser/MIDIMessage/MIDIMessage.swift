@@ -7,7 +7,7 @@ protocol MIDIMessage: Sendable {
 }
 
 extension MIDIMessage {
-    private init(bytes: [UInt8]) {
+    internal init(bytes: [UInt8]) {
         self.init(bytes: bytes)
     }
 }

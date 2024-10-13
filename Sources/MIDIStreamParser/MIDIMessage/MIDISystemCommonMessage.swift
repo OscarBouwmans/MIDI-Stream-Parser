@@ -1,6 +1,22 @@
 
 protocol MIDISystemCommonMessage: MIDIMessage {}
 
+struct MIDISystemExclusiveMessage: MIDISystemCommonMessage {
+    var type: MIDIMessageType { .systemExclusive }
+    let bytes: [UInt8]
+    
+    var payload: [UInt8] { Array(bytes[1..<bytes.count-1]) }
+}
+
+extension MIDISystemExclusiveMessage {
+    init(payload: [UInt8]) throws {
+        guard !payload.isEmpty else {
+            throw MIDIMessageError.invalidValue
+        }
+        self.init(bytes: [0xF0] + payload + [0xF7])
+    }
+}
+
 struct MIDITimeCodeQuarterFrameMessage: MIDISystemCommonMessage {
     var type: MIDIMessageType { .timeCodeQuarterFrame }
     let bytes: [UInt8]
@@ -55,7 +71,7 @@ public enum MIDITimeCodeQuarterFrameData: Equatable {
         case 0x50: self = .minuteMsb(msb: byte & 0x0F)
         case 0x60: self = .hourLsb(lsb: byte & 0x0F)
         case 0x70:
-            guard let rate = MIDITimeCodeFrameRate.init(rawValue: (byte >> 1) & 0x03) else {
+            guard let rate = MIDITimeCodeFrameRate.init(rawValue: (byte & 0x06) >> 1) else {
                 throw MIDIMessageError.invalidValue
             }
             self = .hourMsb(msb: byte & 0x01, rate: rate)
@@ -67,16 +83,16 @@ public enum MIDITimeCodeQuarterFrameData: Equatable {
 
 public enum MIDITimeCodeFrameRate: UInt8 {
     case r24 = 0x00
-    case r25 = 0x02
-    case r29 = 0x04
-    case r30 = 0x06
+    case r25 = 0x01
+    case r29 = 0x02
+    case r30 = 0x03
 }
 
 extension MIDITimeCodeQuarterFrameMessage {
     public init(_ quarterFrame: MIDITimeCodeQuarterFrameData) throws {
         switch quarterFrame {
         case .frameLsb(let value), .secondLsb(let value), .minuteLsb(let value), .hourLsb(let value):
-            guard value < 0x80 else { throw MIDIMessageError.invalidValue }
+            guard value < 0x10 else { throw MIDIMessageError.invalidValue }
         case .frameMsb(let value):
             guard value < 0x02 else { throw MIDIMessageError.invalidValue }
         case .secondMsb(let value), .minuteMsb(let value):
@@ -106,26 +122,26 @@ extension MIDISongPositionPointerMessage {
     }
 }
 
-struct MIDISongSelect: MIDISystemCommonMessage {
+struct MIDISongSelectMessage: MIDISystemCommonMessage {
     var type: MIDIMessageType { .songSelect }
     let bytes: [UInt8]
     
     public var song: UInt8 { bytes[1] }
 }
 
-extension MIDISongSelect {
+extension MIDISongSelectMessage {
     public init(song: UInt8) throws {
         try validate(valueByte: song)
         self.bytes = [0xF3, song]
     }
 }
 
-struct MIDITuneRequest: MIDISystemCommonMessage {
+struct MIDITuneRequestMessage: MIDISystemCommonMessage {
     var type: MIDIMessageType { .tuneRequest }
     let bytes: [UInt8]
 }
 
-extension MIDITuneRequest {
+extension MIDITuneRequestMessage {
     public init() {
         self.bytes = [0xF6]
     }

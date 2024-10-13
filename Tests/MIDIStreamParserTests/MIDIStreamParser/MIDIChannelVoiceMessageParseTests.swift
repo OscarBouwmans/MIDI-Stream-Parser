@@ -1,14 +1,6 @@
 import Testing
 @testable import MIDIStreamParser
 
-actor TestDelegate: MIDIStreamParserDelegate {
-    var receivedMessages: [any MIDIMessage] = []
-    
-    func parser(_: MIDIStreamParser, didParse message: any MIDIMessage) {
-        self.receivedMessages.append(message)
-    }
-}
-
 @Test func testParsingMIDIChannelVoiceMessages() async throws {
     let parser = MIDIStreamParser()
     let delegate = TestDelegate()

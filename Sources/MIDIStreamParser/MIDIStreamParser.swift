@@ -92,21 +92,28 @@ actor MIDIStreamParser {
 
 extension MIDIStreamParser {
     static func selectNextParser(statusByte: UInt8) -> MIDIParserResult {
-        switch statusByte & 0xF0 {
-        case MIDIMessageType.noteOff.rawValue:
-            return statusNoteOffParser(statusByte: statusByte)
-        case MIDIMessageType.noteOn.rawValue:
-            return statusNoteOnParser(statusByte: statusByte)
-        case MIDIMessageType.polyphonicKeyPressure.rawValue:
-            return statusPolyphonicKeyPressureParser(statusByte: statusByte)
-        case MIDIMessageType.controlChange.rawValue:
-            return statusControlChangeParser(statusByte: statusByte)
-        case MIDIMessageType.programChange.rawValue:
-            return statusProgramChangeParser(statusByte: statusByte)
-        case MIDIMessageType.channelPressure.rawValue:
-            return statusChannelPressureParser(statusByte: statusByte)
-        case MIDIMessageType.pitchBend.rawValue:
-            return statusPitchBendParser(statusByte: statusByte)
+        if statusByte < 0xF0 {
+            switch statusByte & 0xF0 {
+            case MIDIMessageType.noteOff.rawValue:
+                return statusNoteOffParser(statusByte: statusByte)
+            case MIDIMessageType.noteOn.rawValue:
+                return statusNoteOnParser(statusByte: statusByte)
+            case MIDIMessageType.polyphonicKeyPressure.rawValue:
+                return statusPolyphonicKeyPressureParser(statusByte: statusByte)
+            case MIDIMessageType.controlChange.rawValue:
+                return statusControlChangeParser(statusByte: statusByte)
+            case MIDIMessageType.programChange.rawValue:
+                return statusProgramChangeParser(statusByte: statusByte)
+            case MIDIMessageType.channelPressure.rawValue:
+                return statusChannelPressureParser(statusByte: statusByte)
+            case MIDIMessageType.pitchBend.rawValue:
+                return statusPitchBendParser(statusByte: statusByte)
+            default:
+                return MIDIParserResult.None
+            }
+        }
+        
+        switch statusByte {
         case MIDIMessageType.systemExclusive.rawValue:
             return statusSystemExclusiveParser(statusByte: statusByte)
         case MIDIMessageType.timeCodeQuarterFrame.rawValue:
@@ -121,18 +128,24 @@ extension MIDIStreamParser {
             }
         case MIDIMessageType.songSelect.rawValue:
             return valueByteGuard { song, _ in
-                return MIDIParserResult(message: MIDISongSelect(bytes: [statusByte, song]))
+                return MIDIParserResult(message: MIDISongSelectMessage(bytes: [statusByte, song]))
             }
         case MIDIMessageType.tuneRequest.rawValue:
-            return MIDIParserResult(message: MIDITuneRequest(bytes: [statusByte]))
-        case MIDIMessageType.endOfExclusive.rawValue,
-             MIDIMessageType.timingClock.rawValue,
-             MIDIMessageType.start.rawValue,
-             MIDIMessageType.continue.rawValue,
-             MIDIMessageType.stop.rawValue,
-             MIDIMessageType.activeSensing.rawValue,
-             MIDIMessageType.systemReset.rawValue:
+            return MIDIParserResult(message: MIDITuneRequestMessage(bytes: [statusByte]))
+        case MIDIMessageType.endOfExclusive.rawValue:
             return MIDIParserResult.None
+        case MIDIMessageType.timingClock.rawValue:
+            return MIDIParserResult(message: MIDITimingClockMessage())
+        case MIDIMessageType.start.rawValue:
+            return MIDIParserResult(message: MIDIStartMessage())
+        case MIDIMessageType.continue.rawValue:
+            return MIDIParserResult(message: MIDIContinueMessage())
+        case MIDIMessageType.stop.rawValue:
+            return MIDIParserResult(message: MIDIStopMessage())
+        case MIDIMessageType.activeSensing.rawValue:
+            return MIDIParserResult(message: MIDIActiveSensingMessage() )
+         case MIDIMessageType.systemReset.rawValue:
+            return MIDIParserResult(message: MIDIResetMessage())
         default:
             return MIDIParserResult.None
         }
@@ -160,6 +173,11 @@ struct MIDIParserResult {
     init(nextParser: @escaping MIDISingleByteParser) {
         self.nextParser = nextParser;
         self.message = nil;
+    }
+    
+    init(interrupting message: MIDISystemRealTimeMessage, nextParser: @escaping MIDISingleByteParser) {
+        self.nextParser = nextParser;
+        self.message = message
     }
     
     static var None: MIDIParserResult {
