@@ -86,3 +86,33 @@ struct UnsafeMIDIMessage: MIDIMessage {
         #expect(tcqf.value == .frameLsb(lsb: 5))
     }
 }
+
+@Test func testHugeSysExParsing() async throws {
+    let parser = MIDIStreamParser()
+    let delegate = TestDelegate()
+    await parser.setDelegate(delegate)
+    
+    let bigMessage = Array(0...65_536).map({ UInt8($0 % 128) })
+    
+    let testMessages: [MIDIMessage] = [
+        try! MIDINoteOnMessage(channel: 1, note: 2, velocity: 3),
+        try! MIDISystemExclusiveMessage(payload: bigMessage),
+        try! MIDIControlChangeMessage(channel: 1, controller: 2, value: 3),
+    ]
+    
+    await parser.push([]
+        + testMessages[0].bytes
+        + testMessages[1].bytes
+        + testMessages[2].bytes
+    )
+    
+    let messages = await delegate.receivedMessages
+    #expect(messages.count == testMessages.count)
+    #expect(messages[1].bytes.count == bigMessage.count + 2)
+    
+    for (index, message) in messages.enumerated() {
+        let testMessage = messages[index]
+        #expect(message.type == testMessage.type)
+        #expect(message.bytes == testMessage.bytes)
+    }
+}
