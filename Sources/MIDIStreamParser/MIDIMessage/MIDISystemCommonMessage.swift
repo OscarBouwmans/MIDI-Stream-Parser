@@ -60,8 +60,7 @@ public enum MIDITimeCodeQuarterFrameData: Equatable {
     }
     
     public init(from byte: UInt8) throws {
-        try validate(valueByte: byte)
-        let offset = byte & 0x70
+        let offset = byte & 0xF0
         switch offset {
         case 0x00: self = .frameLsb(lsb: byte & 0x0F)
         case 0x10: self = .frameMsb(msb: byte & 0x0F)
@@ -71,9 +70,10 @@ public enum MIDITimeCodeQuarterFrameData: Equatable {
         case 0x50: self = .minuteMsb(msb: byte & 0x0F)
         case 0x60: self = .hourLsb(lsb: byte & 0x0F)
         case 0x70:
-            guard let rate = MIDITimeCodeFrameRate.init(rawValue: (byte & 0x06) >> 1) else {
+            guard byte & 0x08 == 0 else {
                 throw MIDIMessageError.invalidValue
             }
+            let rate = MIDITimeCodeFrameRate.init(rawValue: (byte & 0x06) >> 1)!
             self = .hourMsb(msb: byte & 0x01, rate: rate)
         default:
             throw MIDIMessageError.invalidValue

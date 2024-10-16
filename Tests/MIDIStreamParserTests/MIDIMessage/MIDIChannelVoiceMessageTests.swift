@@ -4,6 +4,7 @@ import Testing
 
 @Test func midiNoteOffMessage() async throws {
     let msg = try? MIDINoteOffMessage(channel: 7, note: 60, velocity: 80)
+    #expect(msg?.type == .noteOff)
     #expect(msg?.bytes.count == 3)
     #expect(msg?.bytes[0] == 135)
     #expect(msg?.bytes[1] == 60)
@@ -25,6 +26,7 @@ import Testing
 
 @Test func midiNoteOnMessage() async throws {
     let msg = try? MIDINoteOnMessage(channel: 7, note: 60, velocity: 80)
+    #expect(msg?.type == .noteOn)
     #expect(msg?.bytes.count == 3)
     #expect(msg?.bytes[0] == 151)
     #expect(msg?.bytes[1] == 60)
@@ -46,6 +48,7 @@ import Testing
 
 @Test func midiPolyphonicKeyPressureMessage() async throws {
     let msg = try? MIDIPolyphonicKeyPressureMessage(channel: 7, note: 60, pressure: 80)
+    #expect(msg?.type == .polyphonicKeyPressure)
     #expect(msg?.bytes.count == 3)
     #expect(msg?.bytes[0] == 167)
     #expect(msg?.bytes[1] == 60)
@@ -67,6 +70,7 @@ import Testing
 
 @Test func midiControlChangeMessage() async throws {
     let msg = try? MIDIControlChangeMessage(channel: 7, controller: 64, value: 127)
+    #expect(msg?.type == .controlChange)
     #expect(msg?.bytes.count == 3)
     #expect(msg?.bytes[0] == 183)
     #expect(msg?.bytes[1] == 64)
@@ -88,6 +92,7 @@ import Testing
 
 @Test func midiProgramChangeMessage() async throws {
     let msg = try? MIDIProgramChangeMessage(channel: 7, program: 64)
+    #expect(msg?.type == .programChange)
     #expect(msg?.bytes.count == 2)
     #expect(msg?.bytes[0] == 199)
     #expect(msg?.bytes[1] == 64)
@@ -104,6 +109,7 @@ import Testing
 
 @Test func midiChannelPressureMessage() async throws {
     let msg = try? MIDIChannelPressureMessage(channel: 7, pressure: 100)
+    #expect(msg?.type == .channelPressure)
     #expect(msg?.bytes.count == 2)
     #expect(msg?.bytes[0] == 215)
     #expect(msg?.bytes[1] == 100)
@@ -120,6 +126,7 @@ import Testing
 
 @Test func midiPitchBendMessage() async throws {
     let msg = try? MIDIPitchBendMessage(channel: 7, value: 8192)
+    #expect(msg?.type == .pitchBend)
     #expect(msg?.bytes.count == 3)
     #expect(msg?.bytes[0] == 231)
     #expect(msg?.bytes[1] == 0)

@@ -48,6 +48,7 @@ import Testing
         for bytes in min...max {
             let value = data(bytes)
             let msg = try? MIDITimeCodeQuarterFrameMessage(value)
+            #expect(msg?.type == .timeCodeQuarterFrame)
             #expect(msg?.bytes.count == 2)
             #expect(msg?.bytes[0] == 0xF1)
             #expect(msg?.bytes[1] == value.byteValue)
@@ -56,8 +57,19 @@ import Testing
     }
 }
 
+@Test func midiTimeCodeQuarterFrameData() async throws {
+    #expect(throws: MIDIMessageError.invalidValue) {
+        try MIDITimeCodeQuarterFrameData(from: 0xF0)
+    }
+    
+    #expect(throws: MIDIMessageError.invalidValue) {
+        try MIDITimeCodeQuarterFrameData(from: 0x78)
+    }
+}
+
 @Test func midiSongPositionPointerMessage() async throws {
     let msg = try? MIDISongPositionPointerMessage(value: 8192)
+    #expect(msg?.type == .songPositionPointer)
     #expect(msg?.bytes.count == 3)
     #expect(msg?.bytes[0] == 0xF2)
     #expect(msg?.bytes[1] == 0x00)
@@ -77,6 +89,7 @@ import Testing
 
 @Test func midiSongSelectMessage() async throws {
     let msg = try? MIDISongSelectMessage(song: 64)
+    #expect(msg?.type == .songSelect)
     #expect(msg?.bytes.count == 2)
     #expect(msg?.bytes[0] == 0xF3)
     #expect(msg?.bytes[1] == 64)
@@ -92,6 +105,7 @@ import Testing
 
 @Test func midiTuneRequestMessage() async throws {
     let msg = MIDITuneRequestMessage()
+    #expect(msg.type == .tuneRequest)
     #expect(msg.bytes.count == 1)
     #expect(msg.bytes[0] == 0xF6)
 }
