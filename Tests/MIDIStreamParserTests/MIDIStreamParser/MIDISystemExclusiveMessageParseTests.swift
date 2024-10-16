@@ -116,3 +116,20 @@ struct UnsafeMIDIMessage: MIDIMessage {
         #expect(message.bytes == testMessage.bytes)
     }
 }
+
+@Test func testEmptySysExParsing() async throws {
+    let parser = MIDIStreamParser()
+    let delegate = TestDelegate()
+    await parser.setDelegate(delegate)
+    
+    await parser.push([]
+        + (try! MIDIProgramChangeMessage(channel: 7, program: 8)).bytes
+        + [0xF0, 0xF7]
+        + (try! MIDIControlChangeMessage(channel: 1, controller: 2, value: 3)).bytes
+    )
+    
+    let messages = await delegate.receivedMessages
+    #expect(messages.count == 2)
+    #expect(messages[0] is MIDIProgramChangeMessage)
+    #expect(messages[1] is MIDIControlChangeMessage)
+}
