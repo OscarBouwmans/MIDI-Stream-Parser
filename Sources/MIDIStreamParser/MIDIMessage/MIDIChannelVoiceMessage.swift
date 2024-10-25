@@ -35,7 +35,7 @@ extension MIDINoteOffMessage {
     }
 }
 
-struct MIDINoteOnMessage: MIDINoteMessage {
+public struct MIDINoteOnMessage: MIDINoteMessage {
     public var type: MIDIMessageType { .noteOn }
     public let bytes: [UInt8]
 }
