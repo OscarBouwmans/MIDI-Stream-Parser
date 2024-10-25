@@ -1,11 +1,6 @@
 import Testing
 @testable import MIDIStreamParser
 
-struct UnsafeMIDIMessage: MIDIMessage {
-    let type: MIDIMessageType = .endOfExclusive
-    var bytes: [UInt8]
-}
-
 @Test func testParsingSysExMessages() async throws {
     let parser = MIDIStreamParser()
     let delegate = TestDelegate()
