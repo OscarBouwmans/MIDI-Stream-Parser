@@ -39,7 +39,7 @@ import Testing
     #expect(messages[8] is MIDITimingClockMessage)
     #expect(messages[9] is MIDIActiveSensingMessage)
     #expect(messages[10] is MIDITimingClockMessage)
-    #expect(messages[11] is MIDIResetMessage)
+    #expect(messages[11] is MIDISystemResetMessage)
     #expect(messages[12] is MIDITimingClockMessage)
     
     // Test that Note messages were parsed correctly despite real-time interruption

@@ -19,7 +19,7 @@ struct UnsafeMIDIMessage: MIDIMessage {
         MIDIContinueMessage(),
         MIDIStopMessage(),
         MIDIActiveSensingMessage(),
-        MIDIResetMessage(),
+        MIDISystemResetMessage(),
         MIDITimingClockMessage(),
         try! MIDISystemExclusiveMessage(payload: [0x41, 0x10, 0x42, 0x12, 0x40, 0x00, 0x7F, 0x00, 0x41]),
     ]

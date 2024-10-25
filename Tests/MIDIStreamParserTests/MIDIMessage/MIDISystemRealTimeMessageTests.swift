@@ -37,7 +37,7 @@ import Testing
 }
 
 @Test func midiSystemResetMessage() async throws {
-    let msg = MIDIResetMessage()
+    let msg = MIDISystemResetMessage()
     #expect(msg.type == .systemReset)
     #expect(msg.bytes.count == 1)
     #expect(msg.bytes[0] == 0xFF)

@@ -66,12 +66,12 @@ extension MIDIActiveSensingMessage {
     }
 }
 
-struct MIDIResetMessage: MIDISystemRealTimeMessage {
+struct MIDISystemResetMessage: MIDISystemRealTimeMessage {
     let type: MIDIMessageType = .systemReset
     let bytes: [UInt8]
 }
 
-extension MIDIResetMessage {
+extension MIDISystemResetMessage {
     init() {
         self.bytes = [MIDIMessageType.systemReset.rawValue]
     }

@@ -155,7 +155,7 @@ extension MIDIStreamParser {
         case MIDIMessageType.activeSensing.rawValue:
             return MIDIParserResult(message: MIDIActiveSensingMessage() )
          case MIDIMessageType.systemReset.rawValue:
-            return MIDIParserResult(message: MIDIResetMessage())
+            return MIDIParserResult(message: MIDISystemResetMessage())
         default:
             // we end up here, if a value byte is provided without status byte (and no running status is available)
             return MIDIParserResult.None

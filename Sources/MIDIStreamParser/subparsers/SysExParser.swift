@@ -26,7 +26,7 @@ extension MIDIStreamParser {
                 case MIDIMessageType.activeSensing.rawValue:
                     return MIDIParserResult(interrupting: MIDIActiveSensingMessage(), nextParser: subParse)
                 case MIDIMessageType.systemReset.rawValue:
-                    return MIDIParserResult(interrupting: MIDIResetMessage(), nextParser: subParse)
+                    return MIDIParserResult(interrupting: MIDISystemResetMessage(), nextParser: subParse)
                 default:
                     // any other non-value byte invalidates our SysEx and should be interpreted as a new message:
                     return selectNextParser(statusByte: byte)
