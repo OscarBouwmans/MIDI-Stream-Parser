@@ -1,6 +1,4 @@
 
-import Foundation
-
 typealias MIDISingleByteParser = (_: UInt8, _: UInt8?) -> MIDIParserResult
 
 class MIDIStreamParser {
