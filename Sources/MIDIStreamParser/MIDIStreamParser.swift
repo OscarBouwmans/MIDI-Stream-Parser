@@ -27,12 +27,14 @@ actor MIDIStreamParser {
     
     func push(_ bytes: [UInt8]) async {
         for byte in bytes {
+            if (MIDIStreamParser.doesByteInvalidateRunningStatus(byte: byte)) {
+                currentRunningStatus = nil
+            }
+            
             let result = self.currentParser(byte, currentRunningStatus)
             if let message = result.message {
                 if (MIDIStreamParser.isValidRunningStatusByte(byte: message.bytes.first!)) {
                     currentRunningStatus = message.bytes.first
-                } else {
-                    currentRunningStatus = nil
                 }
                 parsedMessageQueue.append(message)
             }
@@ -59,22 +61,15 @@ actor MIDIStreamParser {
     
     static func statusByteParser() -> MIDISingleByteParser {
         return { (incomingByte, currentRunningStatusByte) in
-            if incomingByte < 128 {
-                guard let runningStatusByte = currentRunningStatusByte else {
-                    return MIDIParserResult.None
-                }
+            if incomingByte < 128, let runningStatusByte = currentRunningStatusByte {
                 let nextParser = selectNextParser(statusByte: runningStatusByte).nextParser
                 return nextParser(incomingByte, currentRunningStatusByte)
             }
-            
             return selectNextParser(statusByte: incomingByte)
         }
     }
     
     private static func isValidRunningStatusByte(byte: UInt8) -> Bool {
-        guard byte > 127 else {
-            return false
-        }
         switch byte & 0xF0 {
         case MIDIMessageType.noteOff.rawValue,
             MIDIMessageType.noteOn.rawValue,
@@ -88,31 +83,46 @@ actor MIDIStreamParser {
             return false
         }
     }
+    
+    private static let invalidRunningStatusMessageTypes: [MIDIMessageType] = [
+        .systemExclusive,
+        .timeCodeQuarterFrame,
+        .songPositionPointer,
+        .songSelect,
+        .reserved1,
+        .reserved2,
+        .tuneRequest,
+        .endOfExclusive,
+    ]
+    
+    private static func doesByteInvalidateRunningStatus(byte: UInt8) -> Bool {
+        return invalidRunningStatusMessageTypes.contains(where: { $0.rawValue == byte })
+    }
 }
 
 extension MIDIStreamParser {
     static func selectNextParser(statusByte: UInt8) -> MIDIParserResult {
-        if statusByte < 0xF0 {
-            switch statusByte & 0xF0 {
-            case MIDIMessageType.noteOff.rawValue:
-                return statusNoteOffParser(statusByte: statusByte)
-            case MIDIMessageType.noteOn.rawValue:
-                return statusNoteOnParser(statusByte: statusByte)
-            case MIDIMessageType.polyphonicKeyPressure.rawValue:
-                return statusPolyphonicKeyPressureParser(statusByte: statusByte)
-            case MIDIMessageType.controlChange.rawValue:
-                return statusControlChangeParser(statusByte: statusByte)
-            case MIDIMessageType.programChange.rawValue:
-                return statusProgramChangeParser(statusByte: statusByte)
-            case MIDIMessageType.channelPressure.rawValue:
-                return statusChannelPressureParser(statusByte: statusByte)
-            case MIDIMessageType.pitchBend.rawValue:
-                return statusPitchBendParser(statusByte: statusByte)
-            default:
-                return MIDIParserResult.None
-            }
+        switch statusByte & 0xF0 {
+        case MIDIMessageType.noteOff.rawValue:
+            return statusNoteOffParser(statusByte: statusByte)
+        case MIDIMessageType.noteOn.rawValue:
+            return statusNoteOnParser(statusByte: statusByte)
+        case MIDIMessageType.polyphonicKeyPressure.rawValue:
+            return statusPolyphonicKeyPressureParser(statusByte: statusByte)
+        case MIDIMessageType.controlChange.rawValue:
+            return statusControlChangeParser(statusByte: statusByte)
+        case MIDIMessageType.programChange.rawValue:
+            return statusProgramChangeParser(statusByte: statusByte)
+        case MIDIMessageType.channelPressure.rawValue:
+            return statusChannelPressureParser(statusByte: statusByte)
+        case MIDIMessageType.pitchBend.rawValue:
+            return statusPitchBendParser(statusByte: statusByte)
+        default:
+            return selectNextNonChannelVoiceParser(statusByte: statusByte)
         }
-        
+    }
+    
+    static private func selectNextNonChannelVoiceParser(statusByte: UInt8) -> MIDIParserResult {
         switch statusByte {
         case MIDIMessageType.systemExclusive.rawValue:
             return statusSystemExclusiveParser(statusByte: statusByte)
@@ -147,6 +157,7 @@ extension MIDIStreamParser {
          case MIDIMessageType.systemReset.rawValue:
             return MIDIParserResult(message: MIDIResetMessage())
         default:
+            // we end up here, if a value byte is provided without status byte (and no running status is available)
             return MIDIParserResult.None
         }
     }

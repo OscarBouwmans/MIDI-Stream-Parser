@@ -9,6 +9,21 @@ actor TestDelegate: MIDIStreamParserDelegate {
     }
 }
 
-@Test func example() async throws {
-    // Write your test here and use APIs like `#expect(...)` to check expected conditions.
+@Test func parsingStorm() async throws {
+    let parser = MIDIStreamParser()
+    let delegate = TestDelegate()
+    await parser.setDelegate(delegate)
+    
+    let numberOfMessages = 100
+    
+    // Push all messages at once
+    await withTaskGroup(of: Void.self) { taskGroup in
+        for _ in 1...numberOfMessages {
+            taskGroup.addTask {
+                await parser.push([0x90, 0x3C, 0x7F])
+            }
+        }
+    }
+    
+    #expect(await delegate.receivedMessages.count == numberOfMessages)
 }
