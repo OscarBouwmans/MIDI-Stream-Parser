@@ -3,11 +3,9 @@ import Testing
 
 @Test func testParsingMIDISystemRealTimeMessages() async throws {
     let parser = MIDIStreamParser()
-    let delegate = TestDelegate()
-    await parser.setDelegate(delegate)
     
     // Test parsing real-time messages mixed with other message types
-    await parser.push([
+    parser.push([
         0xF8,                      // Timing Clock
         0x90, 0x3C, 0x7F,         // Note On, channel 1, note 60, velocity 127
         0xFA,                      // Start
@@ -26,7 +24,7 @@ import Testing
     ])
     
     // Evaluate all parsed messages
-    let messages = await delegate.receivedMessages
+    let messages: [MIDIMessage] = parser.next()
     #expect(messages.count == 15)
     
     // Test the sequence of messages
@@ -62,11 +60,9 @@ import Testing
 
 @Test func testParsingRealTimeWithSysEx() async throws {
     let parser = MIDIStreamParser()
-    let delegate = TestDelegate()
-    await parser.setDelegate(delegate)
     
     // Test real-time messages interleaved with System Exclusive
-    await parser.push([
+    parser.push([
         0xF0, 0x43,               // Start SysEx
         0xF8,                     // Timing Clock (should be parsed immediately)
         0x12, 0x00,              // Continue SysEx
@@ -77,7 +73,7 @@ import Testing
     ])
     
     // Evaluate all parsed messages
-    let messages = await delegate.receivedMessages
+    let messages: [MIDIMessage] = parser.next()
     #expect(messages.count == 5)
     
     #expect(messages[0] is MIDITimingClockMessage)

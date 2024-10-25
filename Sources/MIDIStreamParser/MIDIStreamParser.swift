@@ -3,29 +3,17 @@ import Foundation
 
 typealias MIDISingleByteParser = (_: UInt8, _: UInt8?) -> MIDIParserResult
 
-protocol MIDIStreamParserDelegate: Sendable {
-    func parser(_: MIDIStreamParser, didParse message: any MIDIMessage) async
-}
-
-actor MIDIStreamParser {
+class MIDIStreamParser {
     private var currentParser: MIDISingleByteParser
     private var currentRunningStatus: UInt8?
     
     private var parsedMessageQueue: [any MIDIMessage] = [];
-    private var isFlushingQueue: Bool = false
-    private var currentFlush: Task<Void, Never>?
-    
-    public var delegate: MIDIStreamParserDelegate?
     
     init() {
         self.currentParser = MIDIStreamParser.statusByteParser()
     }
     
-    func setDelegate(_ delegate: MIDIStreamParserDelegate) {
-        self.delegate = delegate
-    }
-    
-    func push(_ bytes: [UInt8]) async {
+    public func push(_ bytes: [UInt8]) {
         for byte in bytes {
             if (MIDIStreamParser.doesByteInvalidateRunningStatus(byte: byte)) {
                 currentRunningStatus = nil
@@ -40,23 +28,21 @@ actor MIDIStreamParser {
             }
             self.currentParser = result.nextParser
         }
-        return await flush().value
     }
     
-    private func flush() -> Task<Void, Never> {
-        if let currentFlush {
-            return currentFlush
-        }
-        
-        currentFlush = Task {
-            while parsedMessageQueue.count > 0 {
-                let message = parsedMessageQueue.removeFirst()
-                await delegate?.parser(self, didParse: message)
-            }
-            currentFlush = nil
-        }
-        
-        return currentFlush!
+    public var pendingMessageCount: Int {
+        return parsedMessageQueue.count
+    }
+    
+    public func next() -> (any MIDIMessage)? {
+        guard parsedMessageQueue.count > 0 else { return nil }
+        return parsedMessageQueue.removeFirst()
+    }
+    
+    public func next() -> [any MIDIMessage] {
+        let messages = parsedMessageQueue
+        parsedMessageQueue.removeAll()
+        return messages
     }
     
     static func statusByteParser() -> MIDISingleByteParser {

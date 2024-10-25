@@ -3,11 +3,9 @@ import Testing
 
 @Test func testParsingMIDIRunningStatus() async throws {
     let parser = MIDIStreamParser()
-    let delegate = TestDelegate()
-    await parser.setDelegate(delegate)
     
     // Test running status with Note On messages, interrupted by System Real-Time
-    await parser.push([
+    parser.push([
         0x90, 0x3C, 0x7F,  // Note On, channel 1, note 60, velocity 127
         0x3E, 0x50,        // Running status: Note On, channel 1, note 62, velocity 80
         0xF8,              // System Real-Time: Timing Clock (shouldn't cancel running status)
@@ -15,7 +13,7 @@ import Testing
     ])
     
     // Test running status with System Common message (should break running status)
-    await parser.push([
+    parser.push([
         0x80, 0x3C, 0x00,  // Note Off, channel 1, note 60, velocity 0
         0x3E, 0x00,        // Running status: Note Off, channel 1, note 62, velocity 0
         0xF2, 0x00, 0x10,  // System Common: Song Position Pointer (cancels running status)
@@ -24,7 +22,7 @@ import Testing
     ])
     
     // Test running status with Control Change messages and System Exclusive
-    await parser.push([
+    parser.push([
         0xB0, 0x07, 0x7F,  // Control Change, channel 1, controller 7 (volume), value 127
         0x0A, 0x40,        // Running status: Control Change, channel 1, controller 10 (pan), value 64
         0xF0, 0x43, 0x12, 0x00, 0xF7,  // System Exclusive message (cancels running status)
@@ -34,7 +32,7 @@ import Testing
     ])
     
     // Evaluate all parsed messages
-    let messages = await delegate.receivedMessages
+    let messages: [MIDIMessage] = parser.next()
     #expect(messages.count == 13)
     
     #expect(messages[0] is MIDINoteOnMessage)

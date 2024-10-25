@@ -3,11 +3,9 @@ import Testing
 
 @Test func testParsingMIDIChannelVoiceMessages() async throws {
     let parser = MIDIStreamParser()
-    let delegate = TestDelegate()
-    await parser.setDelegate(delegate)
     
     // Push all messages at once
-    await parser.push([
+    parser.push([
         0x90, 0x3C, 0x7F,  // Note On, channel 1, note 60 (middle C), velocity 127
         0x80, 0x3C, 0x00,  // Note Off, channel 1, note 60, velocity 0
         0xA2, 0x48, 0x40,  // Poly Key Pressure, channel 3, note 72, pressure 64
@@ -20,7 +18,7 @@ import Testing
     ])
     
     // Evaluate all parsed messages
-    let messages = await delegate.receivedMessages
+    let messages: [MIDIMessage] = parser.next()
     #expect(messages.count == 9)
     
     // Test Note On

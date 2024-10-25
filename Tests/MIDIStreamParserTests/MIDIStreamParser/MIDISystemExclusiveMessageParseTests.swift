@@ -3,8 +3,6 @@ import Testing
 
 @Test func testParsingSysExMessages() async throws {
     let parser = MIDIStreamParser()
-    let delegate = TestDelegate()
-    await parser.setDelegate(delegate)
     
     let testMessages: [MIDIMessage] = [
         try! MIDISystemExclusiveMessage(payload: [4, 8, 15, 16, 23, 42]),
@@ -19,7 +17,7 @@ import Testing
         try! MIDISystemExclusiveMessage(payload: [0x41, 0x10, 0x42, 0x12, 0x40, 0x00, 0x7F, 0x00, 0x41]),
     ]
     
-    await parser.push([]
+    parser.push([]
         + testMessages[0].bytes
         + testMessages[1].bytes
         + [UInt8](testMessages[9].bytes[0...3])
@@ -34,7 +32,7 @@ import Testing
         + [UInt8](testMessages[9].bytes[7...10])
     )
     
-    let messages = await delegate.receivedMessages
+    let messages: [MIDIMessage] = parser.next()
     #expect(messages.count == testMessages.count)
     
     for (index, message) in messages.enumerated() {
@@ -46,14 +44,12 @@ import Testing
 
 @Test func testInvalidSysExParsing() async throws {
     let parser = MIDIStreamParser()
-    let delegate = TestDelegate()
-    await parser.setDelegate(delegate)
     
     let noteOn = try! MIDINoteOnMessage(channel: 0, note: 60, velocity: 127)
     let quarterFrame = try! MIDITimeCodeQuarterFrameMessage(.frameLsb(lsb: 5))
     
     // Push invalid SysEx messages
-    await parser.push([]
+    parser.push([]
         + [UInt8]([0xF0, 0x41, 0x10, 0x42, 0x12, 0x40]) // Start of SysEx
         + noteOn.bytes                                  // Note On (should invalidate SysEx)
         + [UInt8]([0x00, 0xF7])                         // Continuation and end of SysEx (should be ignored)
@@ -63,7 +59,7 @@ import Testing
     )
     
     // Evaluate parsed messages
-    let messages = await delegate.receivedMessages
+    let messages: [MIDIMessage] = parser.next()
     print(messages)
     #expect(messages.count == 2)
     
@@ -84,8 +80,6 @@ import Testing
 
 @Test func testHugeSysExParsing() async throws {
     let parser = MIDIStreamParser()
-    let delegate = TestDelegate()
-    await parser.setDelegate(delegate)
     
     let bigMessage = Array(0...65_536).map({ UInt8($0 % 128) })
     
@@ -95,13 +89,13 @@ import Testing
         try! MIDIControlChangeMessage(channel: 1, controller: 2, value: 3),
     ]
     
-    await parser.push([]
+    parser.push([]
         + testMessages[0].bytes
         + testMessages[1].bytes
         + testMessages[2].bytes
     )
     
-    let messages = await delegate.receivedMessages
+    let messages: [MIDIMessage] = parser.next()
     #expect(messages.count == testMessages.count)
     #expect(messages[1].bytes.count == bigMessage.count + 2)
     
@@ -114,16 +108,14 @@ import Testing
 
 @Test func testEmptySysExParsing() async throws {
     let parser = MIDIStreamParser()
-    let delegate = TestDelegate()
-    await parser.setDelegate(delegate)
     
-    await parser.push([]
+    parser.push([]
         + (try! MIDIProgramChangeMessage(channel: 7, program: 8)).bytes
         + [0xF0, 0xF7]
         + (try! MIDIControlChangeMessage(channel: 1, controller: 2, value: 3)).bytes
     )
     
-    let messages = await delegate.receivedMessages
+    let messages: [MIDIMessage] = parser.next()
     #expect(messages.count == 2)
     #expect(messages[0] is MIDIProgramChangeMessage)
     #expect(messages[1] is MIDIControlChangeMessage)

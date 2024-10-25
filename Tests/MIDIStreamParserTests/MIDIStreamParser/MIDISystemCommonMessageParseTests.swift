@@ -3,11 +3,9 @@ import Testing
 
 @Test func testParsingMIDISystemCommonMessages() async throws {
     let parser = MIDIStreamParser()
-    let delegate = TestDelegate()
-    await parser.setDelegate(delegate)
     
     // Push all messages at once
-    await parser.push(
+    parser.push(
         [UInt8].init(([63, 0, 1, 2, 3, 4, 5, 218])) + // << nonsense
         (try! MIDITimeCodeQuarterFrameMessage(.frameLsb(lsb: 5)).bytes) +
         [UInt8].init(([160, 161, 162, 163, 164, 165, 166, 167])) + // << nonsense
@@ -21,7 +19,7 @@ import Testing
     )
     
     // Evaluate all parsed messages
-    let messages = await delegate.receivedMessages
+    let messages: [MIDIMessage] = parser.next()
     #expect(messages.count == 8)
     
     // Test Time Code Quarter Frame (Frame LSB)
