@@ -1,13 +1,13 @@
 
 typealias MIDISingleByteParser = (_: UInt8, _: UInt8?) -> MIDIParserResult
 
-class MIDIStreamParser {
+public class MIDIStreamParser {
     private var currentParser: MIDISingleByteParser
     private var currentRunningStatus: UInt8?
     
     private var parsedMessageQueue: [any MIDIMessage] = [];
     
-    init() {
+    public init() {
         self.currentParser = MIDIStreamParser.statusByteParser()
     }
     

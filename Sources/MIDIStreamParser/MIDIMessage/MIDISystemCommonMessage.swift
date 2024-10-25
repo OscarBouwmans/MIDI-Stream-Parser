@@ -1,15 +1,15 @@
 
 protocol MIDISystemCommonMessage: MIDIMessage {}
 
-struct MIDISystemExclusiveMessage: MIDISystemCommonMessage {
-    var type: MIDIMessageType { .systemExclusive }
-    let bytes: [UInt8]
+public struct MIDISystemExclusiveMessage: MIDISystemCommonMessage {
+    public var type: MIDIMessageType { .systemExclusive }
+    public let bytes: [UInt8]
     
-    var payload: [UInt8] { Array(bytes[1..<bytes.count-1]) }
+    public var payload: [UInt8] { Array(bytes[1..<bytes.count-1]) }
 }
 
 extension MIDISystemExclusiveMessage {
-    init(payload: [UInt8]) throws {
+    public init(payload: [UInt8]) throws {
         guard !payload.isEmpty else {
             throw MIDIMessageError.invalidValue
         }
@@ -17,11 +17,11 @@ extension MIDISystemExclusiveMessage {
     }
 }
 
-struct MIDITimeCodeQuarterFrameMessage: MIDISystemCommonMessage {
-    var type: MIDIMessageType { .timeCodeQuarterFrame }
-    let bytes: [UInt8]
+public struct MIDITimeCodeQuarterFrameMessage: MIDISystemCommonMessage {
+    public var type: MIDIMessageType { .timeCodeQuarterFrame }
+    public let bytes: [UInt8]
     
-    var value: MIDITimeCodeQuarterFrameData { return try! .init(from: bytes[1]) }
+    public var value: MIDITimeCodeQuarterFrameData { return try! .init(from: bytes[1]) }
 }
 
 public enum MIDITimeCodeQuarterFrameData: Equatable {
@@ -104,9 +104,9 @@ extension MIDITimeCodeQuarterFrameMessage {
     }
 }
 
-struct MIDISongPositionPointerMessage: MIDISystemCommonMessage {
-    var type: MIDIMessageType { .songPositionPointer }
-    let bytes: [UInt8]
+public struct MIDISongPositionPointerMessage: MIDISystemCommonMessage {
+    public var type: MIDIMessageType { .songPositionPointer }
+    public let bytes: [UInt8]
     
     public var lsb: UInt8 { bytes[1] }
     public var msb: UInt8 { bytes[2] }
@@ -122,9 +122,9 @@ extension MIDISongPositionPointerMessage {
     }
 }
 
-struct MIDISongSelectMessage: MIDISystemCommonMessage {
-    var type: MIDIMessageType { .songSelect }
-    let bytes: [UInt8]
+public struct MIDISongSelectMessage: MIDISystemCommonMessage {
+    public var type: MIDIMessageType { .songSelect }
+    public let bytes: [UInt8]
     
     public var song: UInt8 { bytes[1] }
 }
@@ -136,19 +136,19 @@ extension MIDISongSelectMessage {
     }
 }
 
-struct MIDISystemCommonReserved1Message: MIDISystemCommonMessage {
-    var type: MIDIMessageType { ._systemCommonReserved1 }
-    let bytes: [UInt8] = [MIDIMessageType._systemCommonReserved1.rawValue]
+public struct MIDISystemCommonReserved1Message: MIDISystemCommonMessage {
+    public var type: MIDIMessageType { ._systemCommonReserved1 }
+    public let bytes: [UInt8] = [MIDIMessageType._systemCommonReserved1.rawValue]
 }
 
-struct MIDISystemCommonReserved2Message: MIDISystemCommonMessage {
-    var type: MIDIMessageType { ._systemCommonReserved2 }
-    let bytes: [UInt8] = [MIDIMessageType._systemCommonReserved2.rawValue]
+public struct MIDISystemCommonReserved2Message: MIDISystemCommonMessage {
+    public var type: MIDIMessageType { ._systemCommonReserved2 }
+    public let bytes: [UInt8] = [MIDIMessageType._systemCommonReserved2.rawValue]
 }
 
-struct MIDITuneRequestMessage: MIDISystemCommonMessage {
-    var type: MIDIMessageType { .tuneRequest }
-    let bytes: [UInt8]
+public struct MIDITuneRequestMessage: MIDISystemCommonMessage {
+    public var type: MIDIMessageType { .tuneRequest }
+    public let bytes: [UInt8]
 }
 
 extension MIDITuneRequestMessage {

@@ -1,5 +1,5 @@
 
-enum MIDIMessageError: Error {
+public enum MIDIMessageError: Error {
     case invalidChannelNumber
     case invalidValue
 }
