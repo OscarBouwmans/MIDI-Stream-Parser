@@ -12,9 +12,9 @@ extension MIDITimingClockMessage {
     }
 }
 
-struct MIDIReserved1Message: MIDISystemRealTimeMessage {
-    let type: MIDIMessageType = .reserved1
-    let bytes: [UInt8] = [MIDIMessageType.reserved1.rawValue]
+struct MIDISystemRealTimeReserved1Message: MIDISystemRealTimeMessage {
+    let type: MIDIMessageType = ._systemRealTimeReserved1
+    let bytes: [UInt8] = [MIDIMessageType._systemRealTimeReserved1.rawValue]
 }
 
 struct MIDIStartMessage: MIDISystemRealTimeMessage {
@@ -50,9 +50,9 @@ extension MIDIStopMessage {
     }
 }
 
-struct MIDIReserved2Message: MIDISystemRealTimeMessage {
-    let type: MIDIMessageType = .reserved2
-    let bytes: [UInt8] = [MIDIMessageType.reserved2.rawValue]
+struct MIDISystemRealTimeReserved2Message: MIDISystemRealTimeMessage {
+    let type: MIDIMessageType = ._systemRealTimeReserved2
+    let bytes: [UInt8] = [MIDIMessageType._systemRealTimeReserved2.rawValue]
 }
 
 struct MIDIActiveSensingMessage: MIDISystemRealTimeMessage {

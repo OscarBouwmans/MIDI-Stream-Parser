@@ -89,8 +89,8 @@ actor MIDIStreamParser {
         .timeCodeQuarterFrame,
         .songPositionPointer,
         .songSelect,
-        .reserved1,
-        .reserved2,
+        ._systemRealTimeReserved1,
+        ._systemRealTimeReserved2,
         .tuneRequest,
         .endOfExclusive,
     ]
@@ -140,18 +140,26 @@ extension MIDIStreamParser {
             return valueByteGuard { song, _ in
                 return MIDIParserResult(message: MIDISongSelectMessage(bytes: [statusByte, song]))
             }
+        case MIDIMessageType._systemCommonReserved1.rawValue:
+            return MIDIParserResult(message: MIDISystemCommonReserved1Message())
+        case MIDIMessageType._systemCommonReserved2.rawValue:
+            return MIDIParserResult(message: MIDISystemCommonReserved2Message())
         case MIDIMessageType.tuneRequest.rawValue:
             return MIDIParserResult(message: MIDITuneRequestMessage(bytes: [statusByte]))
         case MIDIMessageType.endOfExclusive.rawValue:
             return MIDIParserResult.None
         case MIDIMessageType.timingClock.rawValue:
             return MIDIParserResult(message: MIDITimingClockMessage())
+        case MIDIMessageType._systemRealTimeReserved1.rawValue:
+            return MIDIParserResult(message: MIDISystemRealTimeReserved1Message())
         case MIDIMessageType.start.rawValue:
             return MIDIParserResult(message: MIDIStartMessage())
         case MIDIMessageType.continue.rawValue:
             return MIDIParserResult(message: MIDIContinueMessage())
         case MIDIMessageType.stop.rawValue:
             return MIDIParserResult(message: MIDIStopMessage())
+        case MIDIMessageType._systemRealTimeReserved2.rawValue:
+            return MIDIParserResult(message: MIDISystemRealTimeReserved2Message())
         case MIDIMessageType.activeSensing.rawValue:
             return MIDIParserResult(message: MIDIActiveSensingMessage() )
          case MIDIMessageType.systemReset.rawValue:

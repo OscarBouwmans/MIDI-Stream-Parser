@@ -8,6 +8,13 @@ import Testing
     #expect(msg.bytes[0] == 0xF8)
 }
 
+@Test func midiSystemRealTimeReserved1Message() async throws {
+    let msg = MIDISystemRealTimeReserved1Message()
+    #expect(msg.type == ._systemRealTimeReserved1)
+    #expect(msg.bytes.count == 1)
+    #expect(msg.bytes[0] == 0xF9)
+}
+
 @Test func midiStartMessage() async throws {
     let msg = MIDIStartMessage()
     #expect(msg.type == .start)
@@ -27,6 +34,13 @@ import Testing
     #expect(msg.type == .stop)
     #expect(msg.bytes.count == 1)
     #expect(msg.bytes[0] == 0xFC)
+}
+
+@Test func midiSystemRealTimeReserved2Message() async throws {
+    let msg = MIDISystemRealTimeReserved2Message()
+    #expect(msg.type == ._systemRealTimeReserved2)
+    #expect(msg.bytes.count == 1)
+    #expect(msg.bytes[0] == 0xFD)
 }
 
 @Test func midiActiveSensingMessage() async throws {

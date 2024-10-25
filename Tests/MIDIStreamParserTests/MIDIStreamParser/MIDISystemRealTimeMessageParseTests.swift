@@ -18,14 +18,16 @@ import Testing
         0xFC,                      // Stop
         0xF8,                      // Timing Clock
         0xFE,                      // Active Sensing
+        0xF9,                      // Reserved 1
         0xF8,                      // Timing Clock
+        0xFD,                      // Reserved 2
         0xFF,                      // System Reset
         0xF8                       // Timing Clock
     ])
     
     // Evaluate all parsed messages
     let messages = await delegate.receivedMessages
-    #expect(messages.count == 13)
+    #expect(messages.count == 15)
     
     // Test the sequence of messages
     #expect(messages[0] is MIDITimingClockMessage)
@@ -38,9 +40,11 @@ import Testing
     #expect(messages[7] is MIDIStopMessage)
     #expect(messages[8] is MIDITimingClockMessage)
     #expect(messages[9] is MIDIActiveSensingMessage)
-    #expect(messages[10] is MIDITimingClockMessage)
-    #expect(messages[11] is MIDISystemResetMessage)
-    #expect(messages[12] is MIDITimingClockMessage)
+    #expect(messages[10] is MIDISystemRealTimeReserved1Message)
+    #expect(messages[11] is MIDITimingClockMessage)
+    #expect(messages[12] is MIDISystemRealTimeReserved2Message)
+    #expect(messages[13] is MIDISystemResetMessage)
+    #expect(messages[14] is MIDITimingClockMessage)
     
     // Test that Note messages were parsed correctly despite real-time interruption
     if let noteOn = messages[1] as? MIDINoteOnMessage {

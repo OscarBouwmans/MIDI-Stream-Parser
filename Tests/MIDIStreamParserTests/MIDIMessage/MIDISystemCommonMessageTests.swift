@@ -103,6 +103,20 @@ import Testing
     }
 }
 
+@Test func midiSystemCommonReserved1Message() async throws {
+    let msg = MIDISystemCommonReserved1Message()
+    #expect(msg.type == ._systemCommonReserved1)
+    #expect(msg.bytes.count == 1)
+    #expect(msg.bytes[0] == 0xF4)
+}
+
+@Test func midiSystemCommonReserved2Message() async throws {
+    let msg = MIDISystemCommonReserved2Message()
+    #expect(msg.type == ._systemCommonReserved2)
+    #expect(msg.bytes.count == 1)
+    #expect(msg.bytes[0] == 0xF5)
+}
+
 @Test func midiTuneRequestMessage() async throws {
     let msg = MIDITuneRequestMessage()
     #expect(msg.type == .tuneRequest)

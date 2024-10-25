@@ -15,12 +15,14 @@ import Testing
         (try! MIDISongPositionPointerMessage(value: 8192).bytes) +
         (try! MIDISongSelectMessage(song: 127).bytes) +
         (MIDITuneRequestMessage().bytes) +
-        (try! MIDITimeCodeQuarterFrameMessage(.hourMsb(msb: 1, rate: .r30)).bytes)
+        (try! MIDITimeCodeQuarterFrameMessage(.hourMsb(msb: 1, rate: .r30)).bytes) +
+        (MIDISystemCommonReserved1Message().bytes) +
+        (MIDISystemCommonReserved2Message().bytes)
     )
     
     // Evaluate all parsed messages
     let messages = await delegate.receivedMessages
-    #expect(messages.count == 6)
+    #expect(messages.count == 8)
     
     // Test Time Code Quarter Frame (Frame LSB)
     #expect(messages[0] is MIDITimeCodeQuarterFrameMessage)
@@ -56,4 +58,7 @@ import Testing
     if let tcqf = messages[5] as? MIDITimeCodeQuarterFrameMessage {
         #expect(tcqf.value == .hourMsb(msb: 1, rate: .r30))
     }
+    
+    #expect(messages[6] is MIDISystemCommonReserved1Message)
+    #expect(messages[7] is MIDISystemCommonReserved2Message)
 }
