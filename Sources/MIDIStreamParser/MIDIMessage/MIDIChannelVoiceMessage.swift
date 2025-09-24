@@ -49,7 +49,7 @@ extension MIDINoteOnMessage {
     }
 }
 
-struct MIDIPolyphonicKeyPressureMessage: MIDIChannelVoiceMessage {
+public struct MIDIPolyphonicKeyPressureMessage: MIDIChannelVoiceMessage {
     public var type: MIDIMessageType { .polyphonicKeyPressure }
     public let bytes: [UInt8]
     
@@ -66,7 +66,7 @@ extension MIDIPolyphonicKeyPressureMessage {
     }
 }
 
-struct MIDIControlChangeMessage: MIDIChannelVoiceMessage {
+public struct MIDIControlChangeMessage: MIDIChannelVoiceMessage {
     public var type: MIDIMessageType { .controlChange }
     public let bytes: [UInt8]
     
@@ -83,7 +83,7 @@ extension MIDIControlChangeMessage {
     }
 }
 
-struct MIDIProgramChangeMessage: MIDIChannelVoiceMessage {
+public struct MIDIProgramChangeMessage: MIDIChannelVoiceMessage {
     public var type: MIDIMessageType { .programChange }
     public let bytes: [UInt8]
     
@@ -98,7 +98,7 @@ extension MIDIProgramChangeMessage {
     }
 }
 
-struct MIDIChannelPressureMessage: MIDIChannelVoiceMessage {
+public struct MIDIChannelPressureMessage: MIDIChannelVoiceMessage {
     public var type: MIDIMessageType { .channelPressure }
     public let bytes: [UInt8]
     
@@ -113,7 +113,7 @@ extension MIDIChannelPressureMessage {
     }
 }
 
-struct MIDIPitchBendMessage: MIDIChannelVoiceMessage {
+public struct MIDIPitchBendMessage: MIDIChannelVoiceMessage {
     public var type: MIDIMessageType { .pitchBend }
     public let bytes: [UInt8]
     
