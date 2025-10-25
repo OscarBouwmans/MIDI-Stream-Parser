@@ -138,12 +138,12 @@ extension MIDISongSelectMessage {
 
 public struct MIDISystemCommonReserved1Message: MIDISystemCommonMessage {
     public var type: MIDIMessageType { ._systemCommonReserved1 }
-    public let bytes: [UInt8] = [MIDIMessageType._systemCommonReserved1.rawValue]
+    public var bytes: [UInt8] { [MIDIMessageType._systemCommonReserved1.rawValue] }
 }
 
 public struct MIDISystemCommonReserved2Message: MIDISystemCommonMessage {
     public var type: MIDIMessageType { ._systemCommonReserved2 }
-    public let bytes: [UInt8] = [MIDIMessageType._systemCommonReserved2.rawValue]
+    public var bytes: [UInt8] { [MIDIMessageType._systemCommonReserved2.rawValue] }
 }
 
 public struct MIDITuneRequestMessage: MIDISystemCommonMessage {
