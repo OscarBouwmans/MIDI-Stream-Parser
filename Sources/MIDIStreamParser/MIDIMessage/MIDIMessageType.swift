@@ -1,5 +1,5 @@
 
-public enum MIDIMessageType: UInt8, Sendable, Codable {
+public enum MIDIMessageType: UInt8, Sendable {
     case noteOff = 0x80
     case noteOn = 0x90
     case polyphonicKeyPressure = 0xA0
